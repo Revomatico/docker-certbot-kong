@@ -1,13 +1,29 @@
 #!/bin/bash
 
-# Script to run inside the container at build time
+# Entrypoint script to run inside the container
+# Expects the following env variables:
+# - GRACE_DAYS - [optional] number of days before a certificate expires
+# - MAIN_DOMAIN - the primary domain (e.g. mydomain.com)
+# - KONG_ADMIN - the URL for Kong Admin API (e.g. http://kong-admin.kong:8001)
+# - EMAIL - email address to authenticate to LetsEncrypt (e.g. office@mydomain.com)
 
 esc_newline() {
     sed 's,$,\\n,' | tr -d '\n'
 }
 
-GRACE_DAYS=10000
+VARS='MAIN_DOMAIN KONG_ADMIN EMAIL'
+for v in $VARS; do
+    eval "X=\$$v"
+    if [ -z "$X" ]; then
+	echo "[ERROR] You need to set $v env variable!"
+	exit 1
+    fi
+done
+
+
+GRACE_DAYS=${GRACE_DAYS:-10}
 BASE_DIR=`readlink -f ${BASH_SOURCE[0]} | grep -o '.*/'`
+
 
 echo "++ Checking the current certificate expiration in Kong for $MAIN_DOMAIN ++"
 JSON=`curl -s $KONG_ADMIN/certificates/$MAIN_DOMAIN`
