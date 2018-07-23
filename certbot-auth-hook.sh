@@ -39,6 +39,12 @@ echo "Request data: [$POST_DATA]" > `tty`
 curl -s "http://api.namecheap.com/xml.response?apiuser=${API_USER}&apikey=${API_KEY}&username=${API_USER}&Command=namecheap.domains.dns.setHosts&ClientIp=`curl -s ipinfo.io/ip`&SLD=${CERTBOT_DOMAIN%%.*}&TLD=${CERTBOT_DOMAIN##*.}" \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d "$POST_DATA"
+if [[ $? -ne 0 ]]; then
+    echo "[ERROR] curl namecheap api failed!" > `tty`
+    exit 3
+fi
+
+# No need to check for the XML output from namecheap, since the overall validation will fail if there is an error returned
 
 # Sleep to allow DNS propagation
 sleep ${CHALLENGE_TIMEOUT:-60}

@@ -2,7 +2,7 @@
 
 # Entrypoint script to run inside the container
 # Expects the following env variables:
-# - GRACE_DAYS - [optional] number of days before a certificate expires
+# - GRACE_DAYS - [optional] number of days before a certificate expires, default 10
 # - MAIN_DOMAIN - the primary domain (e.g. mydomain.com)
 # - KONG_ADMIN - the URL for Kong Admin API (e.g. http://kong-admin.kong:8001)
 # - EMAIL - email address to authenticate to LetsEncrypt (e.g. office@mydomain.com)
