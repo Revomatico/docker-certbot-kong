@@ -5,7 +5,7 @@
 REQ="/tmp/${CERTBOT_DOMAIN}.original.request"
 
 # Get the current DNS entries, process them and add them again, because the sad api from namecheap will overwrite everything
-curl -s "http://api.namecheap.com/xml.response?apiuser=${API_USER}&apikey=1${API_KEY}&username=${API_USER}&Command=namecheap.domains.dns.getHosts&ClientIp=`curl -s ipinfo.io/ip`&SLD=${CERTBOT_DOMAIN%%.*}&TLD=${CERTBOT_DOMAIN##*.}" > ${REQ}.xml
+curl -s "http://api.namecheap.com/xml.response?apiuser=${API_USER}&apikey=${API_KEY}&username=${API_USER}&Command=namecheap.domains.dns.getHosts&ClientIp=`curl -s ipinfo.io/ip`&SLD=${CERTBOT_DOMAIN%%.*}&TLD=${CERTBOT_DOMAIN##*.}" > ${REQ}.xml
 if [[ $? -ne 0 ]]; then
     echo "[ERROR] curl namecheap api failed!" > `tty`
     exit 1
