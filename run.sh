@@ -11,6 +11,7 @@ docker run -it \
     -e KONG_ADMIN=$KONG_ADMIN \
     -e API_USER=$API_USER \
     -e API_KEY=$API_KEY \
+    -v /etc/letsencrypt:/etc/letsencrypt \
     --name $DOCKER_CONTAINER \
     $DOCKER_IMAGE \
     bash
