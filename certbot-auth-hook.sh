@@ -7,10 +7,12 @@ DNS_TIMEOUT=${DNS_TIMEOUT:-150}
 
 REQ="/tmp/${CERTBOT_DOMAIN}.original.request"
 
+TTY=$(/usr/bin/tty)
+
 # Get the current DNS entries, process them and add them again, because the sad api from namecheap will overwrite everything
 curl -s "http://api.namecheap.com/xml.response?apiuser=${API_USER}&apikey=${API_KEY}&username=${API_USER}&Command=namecheap.domains.dns.getHosts&ClientIp=`curl -s ipinfo.io/ip`&SLD=${CERTBOT_DOMAIN%%.*}&TLD=${CERTBOT_DOMAIN##*.}" > ${REQ}.xml
 if [[ $? -ne 0 ]]; then
-    echo "[ERROR] curl namecheap api failed!" > `tty`
+    echo "[ERROR] curl namecheap api failed!" > $TTY
     exit 1
 fi
 
@@ -30,8 +32,8 @@ POST_DATA=`sed -E 's/(xmlns|xsi:.*)=\".*\"//g' < ${REQ}.xml | \
 echo "$POST_DATA" > $REQ
 
 if [[ -z "$POST_DATA" ]]; then
-    echo "[ERROR] emtpy response from namecheap API, perhaps failed?!" > `tty`
-    echo "Response: `cat ${REQ}.xml`" > `tty`
+    echo "[ERROR] emtpy response from namecheap API, perhaps failed?!" > $TTY
+    echo "Response: `cat ${REQ}.xml`" > $TTY
     exit 2
 fi
 
@@ -45,14 +47,14 @@ INCR=3
 POST_DATA="HostName$INCR=_acme-challenge.${CERTBOT_DOMAIN}&RecordType$INCR=TXT&Address$INCR=${CERTBOT_VALIDATION}&TTL$INCR=60&${POST_DATA}"
 INCR=4
 POST_DATA="HostName$INCR=_acme-challenge&RecordType$INCR=TXT&Address$INCR=${CERTBOT_VALIDATION}&TTL$INCR=60&${POST_DATA}"
-echo "Request data: [$POST_DATA]" > `tty`
+echo "Request data: [$POST_DATA]" > $TTY
 
 # Call the namecheap cheap API
 curl -s "http://api.namecheap.com/xml.response?apiuser=${API_USER}&apikey=${API_KEY}&username=${API_USER}&Command=namecheap.domains.dns.setHosts&ClientIp=`curl -s ipinfo.io/ip`&SLD=${CERTBOT_DOMAIN%%.*}&TLD=${CERTBOT_DOMAIN##*.}" \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d "$POST_DATA"
 if [[ $? -ne 0 ]]; then
-    echo "[ERROR] curl namecheap api failed!" > `tty`
+    echo "[ERROR] curl namecheap api failed!" > $TTY
     exit 3
 fi
 
@@ -65,7 +67,7 @@ until dig @8.8.8.8 txt ${CERTBOT_DOMAIN} | grep "${CERTBOT_VALIDATION}" 2>&1 > /
     if [[ $timer -ge $DNS_TIMEOUT ]]; then
         break
     else
-        echo " + DNS not propagated. Waiting ${WAITING}s for record creation and replication... Total time elapsed has been $timer out of $DNS_TIMEOUT seconds." > `tty`
+        echo " + DNS not propagated. Waiting ${WAITING}s for record creation and replication... Total time elapsed has been $timer out of $DNS_TIMEOUT seconds." > $TTY
         ((timer+=$WAITING))
         sleep $WAITING
     fi

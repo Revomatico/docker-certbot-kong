@@ -9,7 +9,7 @@ curl -s "http://api.namecheap.com/xml.response?apiuser=${API_USER}&apikey=${API_
 
 sleep 2
 
-cp /etc/letsencrypt/${CERTBOT_DOMAIN}/fullchain{,.`date '+%Y-%m-%d'`}.pem
+cp /etc/letsencrypt/live/${CERTBOT_DOMAIN}/fullchain{,.`date '+%Y-%m-%d'`}.pem
 
 echo "
 -----BEGIN CERTIFICATE-----
@@ -32,4 +32,4 @@ R8srzJmwN0jP41ZL9c8PDHIyh8bwRLtTcm1D9SZImlJnt1ir/md2cXjbDaJWFBM5
 JDGFoqgCWjBH4d1QB7wCCZAA62RjYJsWvIjJEubSfZGL+T0yjWW06XyxV3bqxbYo
 Ob8VZRzI9neWagqNdwvYkQsEjgfbKbYK7p2CNTUQ
 -----END CERTIFICATE-----
-" >> /etc/letsencrypt/${CERTBOT_DOMAIN}/fullchain.pem
+" >> /etc/letsencrypt/live/${CERTBOT_DOMAIN}/fullchain.pem
