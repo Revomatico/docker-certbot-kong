@@ -8,10 +8,9 @@ docker run -it \
     --rm \
     -e MAIN_DOMAIN=$MAIN_DOMAIN \
     -e EMAIL=$EMAIL \
-    -e KONG_ADMIN=$KONG_ADMIN \
     -e API_USER=$API_USER \
     -e API_KEY=$API_KEY \
     -v /etc/letsencrypt:/etc/letsencrypt \
     --name $DOCKER_CONTAINER \
     $DOCKER_IMAGE \
-    bash
+    $*

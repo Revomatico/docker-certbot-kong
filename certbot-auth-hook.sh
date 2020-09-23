@@ -21,12 +21,12 @@ XPATH='//ApiResponse/CommandResponse/DomainDNSGetHostsResult/host'
 INCR=5
 POST_DATA=`sed -E 's/(xmlns|xsi:.*)=\".*\"//g' < ${REQ}.xml | \
     xmlstarlet sel -T -t -m "$XPATH" -v '
-	    concat("HostName",position()+'$INCR',"=",@Name,"&",
-		    "RecordType",position()+'$INCR',"=",@Type,"&",
-		    "Address",position()+'$INCR',"=",@Address,"&",
-		    "MXPref",position()+'$INCR',"=",@MXPref,"&",
-		    "TTL",position()+'$INCR',"=",@TTL,"&"
-	    )' -`
+        concat("HostName",position()+'$INCR',"=",@Name,"&",
+        "RecordType",position()+'$INCR',"=",@Type,"&",
+            "Address",position()+'$INCR',"=",@Address,"&",
+            "MXPref",position()+'$INCR',"=",@MXPref,"&",
+            "TTL",position()+'$INCR',"=",@TTL,"&"
+        )' -`
 
 # Save current parameters to a temp file, to be called by the cleanup hook script
 echo "$POST_DATA" > $REQ
