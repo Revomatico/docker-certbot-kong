@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 # Entrypoint script to run inside the container
 # Expects the following env variables:
@@ -7,6 +7,10 @@
 # - EMAIL - email address to authenticate to LetsEncrypt (e.g. office@mydomain.com)
 
 set -o pipefail -o noclobber -o nounset
+
+[[ " $* " =~ " --staging " ]] && \
+    ACME_SERVER=${ACME_SERVER:-https://acme-staging-v02.api.letsencrypt.org/directory} || \
+    ACME_SERVER=${ACME_SERVER:-https://acme-v02.api.letsencrypt.org/directory}
 
 esc_newline() {
     sed 's,$,\\n,' | tr -d '\n'
@@ -46,10 +50,9 @@ if [[ -n "$RENEW" ]]; then
     --preferred-challenges dns \
     --manual-auth-hook ${BASE_DIR}certbot-auth-hook.sh \
     --manual-cleanup-hook ${BASE_DIR}certbot-cleanup-hook.sh \
-    --server https://acme-v02.api.letsencrypt.org/directory \
+    --server "$ACME_SERVER" \
     -n \
     --agree-tos \
-    --manual-public-ip-logging-ok \
     -d "*.$MAIN_DOMAIN" \
     -m $EMAIL
   if [[ $? -ne 0 ]]; then

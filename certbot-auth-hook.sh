@@ -31,7 +31,7 @@ POST_DATA=`sed -E 's/(xmlns|xsi:.*)=\".*\"//g' < ${REQ}.xml | \
 # Save current parameters to a temp file, to be called by the cleanup hook script
 echo "$POST_DATA" > $REQ
 
-if [[ -z "$POST_DATA" ]]; then
+if [[ `wc -c < $REQ` -lt 2 ]]; then
     echo "[ERROR] emtpy response from namecheap API, perhaps failed?!" > $TTY
     echo "Response: `cat ${REQ}.xml`" > $TTY
     exit 2

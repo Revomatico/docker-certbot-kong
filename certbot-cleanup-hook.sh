@@ -7,7 +7,9 @@ curl -s "http://api.namecheap.com/xml.response?apiuser=${API_USER}&apikey=${API_
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d "`cat $REQ`"
 
-sleep 2
+sleep 5
+
+[[ ! -f /etc/letsencrypt/live/${CERTBOT_DOMAIN}/fullchain.pem ]] && exit
 
 cp /etc/letsencrypt/live/${CERTBOT_DOMAIN}/fullchain{,.`date '+%Y-%m-%d'`}.pem
 
