@@ -25,6 +25,8 @@
 > This can be run in Kubernetes, as a Job
 
 # Release notes
+- 2021-06-14 [0.6]:
+    - Docker pull on latest certbot image
 - 2020-09-23 [0.4]:
     - Removed Kong certificate push, since now Kong is mainly stateless
 - 2018-07-24 [0.2]:
